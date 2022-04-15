@@ -1,0 +1,84 @@
+{% extends 'blog/base_post.html' %}
+
+{% block title %}
+    {{ object.title }} - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-5">
+        {{ object.title }}
+    </h1>
+    <p>Description: {{ object.description }}</p>
+    {% if request.user.is_superuser %}
+        <a href="{% url 'post_update_url' profile_id=profile_id %}" class="btn btn-success">Edit</a>
+        <a href="{% url 'post_delete_url' profile_id=profile_id %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+    <hr>
+    <div class="row">
+        <h3>Add comment</h3>
+        <form action="{% url 'post_detail_url' profile_id=profile_id %}" method="post" id="formComment">
+            {% csrf_token %}
+            <input type="hidden" name="parent" id="contactparent" value="">
+            {% for field in form %}
+                {% if field.id_for_label == 'id_user' or field.id_for_label == 'id_name' and request.user.is_authenticated %}
+                    {{ field.as_hidden }}
+                {% else %}
+                <div class="form-group">
+                    {% if field.errors %}
+                        <div class="alert alert-danger">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                    {% if not field.is_hidden %}
+                        {{ field.label }}
+                    {% endif %}
+                    {{ field }}
+                </div>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-3">Leave a comment</button>
+        </form>
+    </div>
+    <h3>Comments</h3>
+        {% for comment in object.get_comment %}
+            {% if comment.is_active %}
+                <div class="card" style="margin-bottom: 1rem">
+                  <div class="card-body">
+                    <h5 class="card-title" id="contactcomment">
+                        {% if not comment.user %}
+                            {{ comment.name }} - anonymous
+                        {% else %}
+                            {{ comment.user }}
+                        {% endif %}
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ comment.created_at }}</h6>
+                    <p class="card-text">{{ comment.comment }}</p>
+                      <a href="#formComment" onclick="addComment('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
+                      <hr>
+                    {% for com in comment.parent_set.all %}
+                        <div style="margin-left: 50px">
+                        <p>
+                        {% if not com.user %}
+                            {{ com.name }} - anonymous
+                        {% else %}
+                            {{ com.user }}
+                        {% endif %}
+                        </p>
+                        <p>{{ com.created_at }}</p>
+                        <p>{{ com.comment }}</p>
+                        <hr>
+                        </div>
+                    {% endfor %}
+                  </div>
+                </div>
+            {% endif %}
+        {% empty %}
+            <p>There are no comments yet.</p>
+        {% endfor %}
+    <script>
+        function addComment(name, id) {
+            document.getElementById("contactparent").value = id;
+            document.getElementById("contactcomment").innerHTML = `${name}, `
+        }
+    </script>
+{% endblock %}

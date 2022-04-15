@@ -1,0 +1,10 @@
+<div class="card mb-4">
+    <div class="card-header">
+        {{ post.created_at }}
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.description|truncatewords:15 }}</p>
+        <a href="/post/{{ post.id }}" class="btn btn-light">Читать</a>
+    </div>
+</div>

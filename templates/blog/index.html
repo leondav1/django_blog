@@ -1,0 +1,16 @@
+{% extends 'blog/base_post.html' %}
+
+{% block title %}
+    Posts list - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <h1 class="md-5">Posts:</h1>
+    {% for post in posts_list %}
+        {% if post.active %}
+            {% include 'blog/includes/post_card_template.html' %}
+        {% endif %}
+    {% empty %}
+        <p>There are no news yet.</p>
+    {% endfor %}
+{% endblock %}
