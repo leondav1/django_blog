@@ -55,7 +55,7 @@
                     <p class="card-text">{{ comment.comment }}</p>
                       <a href="#formComment" onclick="addComment('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
                       <hr>
-                    {% for com in comment.parent_set.all %}
+                    {% for com in comment.children.all %}
                         <div style="margin-left: 50px">
                         <p>
                         {% if not com.user %}

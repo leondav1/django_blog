@@ -3,6 +3,18 @@ from rest_framework import serializers
 from app_blog.models import Post, PostComment
 
 
+class FilterReviewListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(parent=None)
+        return super().to_representation(data)
+
+
+class RecursiveSerializer(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -34,3 +46,12 @@ class CommentSerializer(serializers.ModelSerializer):
         )
         comm.save()
         return comm
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+    children = RecursiveSerializer(many=True)
+
+    class Meta:
+        list_serializer_class = FilterReviewListSerializer
+        model = PostComment
+        fields = ('name', 'user', 'comment', 'created_at', 'post', 'is_active', 'children')

@@ -56,7 +56,7 @@ class PostComment(models.Model):
         blank=True,
         null=True,
         on_delete=models.CASCADE,
-        related_name='parent_set',
+        related_name='children',
         verbose_name='parent comment'
     )
     is_active = models.BooleanField(
