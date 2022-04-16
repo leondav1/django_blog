@@ -102,4 +102,3 @@ class PostDeleteView(View):
         post = Post.objects.get(id=profile_id)
         post.delete()
         return redirect('posts_list_url')
-

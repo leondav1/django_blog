@@ -39,42 +39,33 @@
             <button type="submit" class="btn btn-primary mt-3">Leave a comment</button>
         </form>
     </div>
+    <hr>
     <h3>Comments</h3>
-        {% for comment in object.get_comment %}
-            {% if comment.is_active %}
-                <div class="card" style="margin-bottom: 1rem">
-                  <div class="card-body">
+    {% load mptt_tags %}
+    <div class="row comments">
+        <div class="col-md-12" id="comments">
+            {% recursetree comments %}
+                {% if node.is_active %}
                     <h5 class="card-title" id="contactcomment">
-                        {% if not comment.user %}
-                            {{ comment.name }} - anonymous
+                        {% if not node.user %}
+                            {{ node.name }} - anonymous
                         {% else %}
-                            {{ comment.user }}
+                            {{ node.user }}
                         {% endif %}
                     </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ comment.created_at }}</h6>
-                    <p class="card-text">{{ comment.comment }}</p>
-                      <a href="#formComment" onclick="addComment('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
-                      <hr>
-                    {% for com in comment.children.all %}
-                        <div style="margin-left: 50px">
-                        <p>
-                        {% if not com.user %}
-                            {{ com.name }} - anonymous
-                        {% else %}
-                            {{ com.user }}
-                        {% endif %}
-                        </p>
-                        <p>{{ com.created_at }}</p>
-                        <p>{{ com.comment }}</p>
-                        <hr>
-                        </div>
-                    {% endfor %}
-                  </div>
-                </div>
-            {% endif %}
-        {% empty %}
-            <p>There are no comments yet.</p>
-        {% endfor %}
+                    <h6>{{ node.created_at }}</h6>
+                    <p>{{ node.comment }}</p>
+                    <a href="#formComment" onclick="addComment('{{ node.name }}', '{{ node.id }}')">Ответить</a>
+                    <hr>
+                    {% if not node.is_leaf_node %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endrecursetree %}
+        </div>
+    </div>
     <script>
         function addComment(name, id) {
             document.getElementById("contactparent").value = id;

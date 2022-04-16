@@ -1,5 +1,7 @@
 from django.db import models
 
+from mptt.models import MPTTModel, TreeForeignKey
+
 
 class Post(models.Model):
     ACTIVE_CHOICES = [
@@ -27,7 +29,7 @@ class Post(models.Model):
         return self.title
 
 
-class PostComment(models.Model):
+class PostComment(MPTTModel):
     ACTIVE_CHOICES = [
         (True, 'active'),
         (False, 'deactive')
@@ -50,7 +52,7 @@ class PostComment(models.Model):
         on_delete=models.CASCADE,
         related_name='post_comments'
     )
-    parent = models.ForeignKey(
+    parent = TreeForeignKey(
         'self',
         default=None,
         blank=True,
@@ -59,6 +61,7 @@ class PostComment(models.Model):
         related_name='children',
         verbose_name='parent comment'
     )
+    number = models.IntegerField(verbose_name='Порядковый номер', default=0, blank=True)
     is_active = models.BooleanField(
         verbose_name='активность',
         max_length=1,
@@ -66,8 +69,9 @@ class PostComment(models.Model):
         default=False
     )
 
-    class Meta:
-        ordering = ['-created_at']
+    class MPTTMeta:
+        # ordering = ['-created_at']
+        order_insertion_by = ['id']
 
     def __str__(self):
         return self.name

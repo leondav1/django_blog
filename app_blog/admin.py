@@ -40,7 +40,7 @@ class PostAdmin(MarkGeneral):
 
 @admin.register(PostComment)
 class PostCommentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'user', 'get_comment', 'is_active']
+    list_display = ['name', 'user', 'get_comment', 'parent', 'level', 'is_active']
     list_filter = ['name', 'is_active']
 
     actions = ['mark_as_delete', 'mark_as_active', 'mark_as_deactive']

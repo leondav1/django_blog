@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'app_blog',
     'app_api',
     'rest_framework',
+    'mptt',
 ]
 
 MIDDLEWARE = [
