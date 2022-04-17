@@ -21,4 +21,5 @@ urlpatterns = [
     path('users/', include('app_users.urls')),
     path('', include('app_blog.urls')),
     path('api/', include('app_api.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
