@@ -61,7 +61,6 @@ class PostComment(MPTTModel):
         related_name='children',
         verbose_name='parent comment'
     )
-    number = models.IntegerField(verbose_name='Порядковый номер', default=0, blank=True)
     is_active = models.BooleanField(
         verbose_name='активность',
         max_length=1,
