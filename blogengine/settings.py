@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import environ
 import os
 from pathlib import Path
 
@@ -28,11 +29,15 @@ except ImportError:
     with open(os.path.join(BASE_DIR, 'blogengine', 'secret_key_file.py'), 'w') as key_file:
         key_file.write("SECRET_KEY = '{key}'".format(key=SECRET_KEY))
 
+root = environ.Path(__file__) - 3
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+SITE_ROOT = root()
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
+TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -69,7 +74,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'templates'
+            'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -89,12 +94,7 @@ WSGI_APPLICATION = 'blogengine.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
@@ -119,9 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -148,6 +148,15 @@ REST_FRAMEWORK = {
     ]
 }
 
+# for django-debug-toolbar
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+# for requests api
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"  # for example
+]
+
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOW_CREDENTIALS = True

@@ -15,7 +15,7 @@ class PostsListView(generic.ListView):
 
 class PostDetailView(View):
     def get(self, request, profile_id):
-        post = get_object_or_404(Post, id__iexact=profile_id)
+        post = get_object_or_404(Post, id=profile_id)
         comments = post.post_comments.all()
         form = PostCommentForm()
         if request.user.is_authenticated:
