@@ -53,7 +53,7 @@ alter role <имя пользователя> set client_encoding to 'utf8';
 alter role <имя пользователя> set default_transaction_isolation to 'read committed';
 alter role <имя пользователя> set timezone to 'UTC';
 ```
-Временной поям можете указать свой, согласно файла settings.py.
+Временное поле можете указать своё, согласно файла settings.py.
 4. Создайте базу для проекта и выйти из консоли
 ```angular2html
 create database <имя БД> owner <имя пользователя>;
